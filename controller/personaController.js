@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
 
     let persona = req.body;
-    personaDb.create(persona, (err, resultado) => {
+    personaDb.create(persona, (err, rows) => {
         if (err) {
             res.status(500).send(err);
         } else {
@@ -44,6 +44,44 @@ app.post('/', (req, res) => {
     });
 
 });
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+app.delete('/:dni', (req, res) => {
+
+    let id_persona_a_eliminar = req.params.dni;
+    personaDb.delete(id_persona_a_eliminar, (err, result_model) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            if (result_model.detail.affectedRows == 0) {
+                res.status(404).send(result_model.message);
+                
+            } else {
+                res.send(result_model); 
+            }
+        }
+    });
+
+});
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+
+
+app.put("/", (req, res) => {
+
+    parametros = [req.body.nombre, req.body.apellido, req.body.dni];
+    personaDb.update(parametros, (err, rows) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.send(rows);
+        }
+    });
+  }
+);
 
 module.exports = app;
 

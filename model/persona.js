@@ -47,8 +47,8 @@ persona_db.getAll = function (funCallback) {
 
 
 persona_db.create = function (persona, funcallback) {
-    consulta = "INSERT INTO persona (dni, nombre, apellido) VALUES (?,?,?);";
-    params = [persona.apellido, persona.dni, persona.nombre];
+    consulta = "INSERT INTO persona (dni, apellido, nombre) VALUES (?,?,?);";
+    params = [persona.dni, persona.apellido, persona.nombre];
 
     connection.query(consulta, params, (err, detail_bd) => {
         if (err) {
@@ -74,6 +74,57 @@ persona_db.create = function (persona, funcallback) {
     });
 }
 
+persona_db.delete = function (id_persona_a_eliminar, retorno) {
+    consulta = 'DELETE FROM persona WHERE dni = ?';
+    params = [id_persona_a_eliminar];
 
+    connection.query(consulta, params, (err, result) => {
+        if (err) {
+            retorno({ message: err.code, detail: err }, undefined);
+        } else {
+
+            if (result.affectedRows == 0) {
+                retorno(undefined, {
+                    message: "No se encontro a la persona",
+                    detalle: result
+                });
+            } else {
+                retorno(undefined, {
+                    mensajito: "se elimino la persona",
+                    detail: result
+                });
+            }
+        }
+    });
+}
+
+persona_db.update("/", (req, res) => {
+
+    parametros = [req.body.nombre, req.body.apellido, req.body.dni];
+    $query = `UPDATE persona set dni = ?, nombre = ?, apellido = ? WHERE dni = ?`;
+
+    connection.query($query, parametros, function (err, rows) {
+        if (err) {
+            res.status(500).send({
+                messaje: "error en back end",
+                detail: err
+            });
+            return;
+        } else {
+            if (rows.affectedRows == 0) {
+                res.status(404).send({
+                    message: "no se encontro la persona con el dni: " + req.params.dni,
+                    detail: rows
+                });
+            } else {
+                message: "se modifico la persona con el dni: " + req.params.dni;
+                detail: rows
+
+            }
+        }
+    }
+    )
+}
+);
 
 module.exports = persona_db;
