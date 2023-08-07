@@ -33,7 +33,7 @@ connection.connect((err) => {
 
 
 persona_db.getAll = function (funCallback) {
-    var consulta = 'SELECT * FROM persona';
+    var consulta = 'SELECT * FROM backend.persona';
     connection.query(consulta, function (err, rows) {
         if (err) {
             funCallback(err);
@@ -44,10 +44,33 @@ persona_db.getAll = function (funCallback) {
     });
 }
 
+persona_db.getByApellido = function (funCallback) {
+    var consulta = 'SELECT apellido FROM backend.persona WHERE dni = ?';
+    connection.query(consulta, function (err, rows) {
+        if (err) {
+            funCallback(err);
+            return;
+        } else {
+            funCallback(undefined, rows);
+        }
+    });
+};
+
+persona_db.getUser = function (funCallback) {
+    let consulta = 'SELECT nickname FROM backend.persona JOIN backend.usuario WHERE dni = ?';
+    connection.query(consulta, function (err, rows) {
+        if (err) {
+            funCallback(err);
+            return;
+        } else {
+            funCallback(undefined, rows);
+        }
+    });
+};
 
 
 persona_db.create = function (persona, funcallback) {
-    consulta = "INSERT INTO persona (dni, apellido, nombre) VALUES (?,?,?);";
+    consulta = 'INSERT INTO persona (dni, nombre, apellido) VALUES (?,?,?);';
     params = [persona.dni, persona.apellido, persona.nombre];
 
     connection.query(consulta, params, (err, detail_bd) => {
@@ -75,7 +98,7 @@ persona_db.create = function (persona, funcallback) {
 }
 
 persona_db.delete = function (id_persona_a_eliminar, retorno) {
-    consulta = 'DELETE FROM persona WHERE dni = ?';
+    consulta = 'DELETE FROM backend.persona WHERE dni = ?';
     params = [id_persona_a_eliminar];
 
     connection.query(consulta, params, (err, result) => {
@@ -98,10 +121,10 @@ persona_db.delete = function (id_persona_a_eliminar, retorno) {
     });
 }
 
-persona_db.update("/", (req, res) => {
+persona_db.update = function (req, res) {
 
     parametros = [req.body.nombre, req.body.apellido, req.body.dni];
-    $query = `UPDATE persona set dni = ?, nombre = ?, apellido = ? WHERE dni = ?`;
+    $query = `UPDATE backend.persona set dni = ?, nombre = ?, apellido = ? WHERE dni = ?`;
 
     connection.query($query, parametros, function (err, rows) {
         if (err) {
@@ -124,7 +147,6 @@ persona_db.update("/", (req, res) => {
         }
     }
     )
-}
-);
+};
 
 module.exports = persona_db;

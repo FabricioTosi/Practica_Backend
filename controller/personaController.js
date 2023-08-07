@@ -1,4 +1,4 @@
-require('rootpath')();
+﻿require('rootpath')();
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -27,6 +27,29 @@ app.get('/', (req, res) => {
 
 });
 
+app.get('/apellido', (req, res) => {
+
+    personaDb.getByApellido((err, resultado) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json(resultado);
+        }
+    });
+
+});
+
+app.get('/nickname', (req, res) => {
+
+    personaDb.getUser((err, resultado) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.json(resultado);
+        }
+    });
+
+});
 
 //---------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------

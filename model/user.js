@@ -42,7 +42,19 @@ usuario_db.getAll = function (funCallback) {
             funCallback(undefined, rows);
         }
     });
-}
+};
+
+usuario_db.getByEmail = function (funCallback) {
+    var consulta = 'SELECT email FROM usuario WHERE persona_dni=?';
+    connection.query(consulta, function (err, rows) {
+        if (err) {
+            funCallback(err);
+            return;
+        } else {
+            funCallback(undefined, rows);
+        }
+    });
+};
 
 
 
@@ -98,7 +110,7 @@ usuario_db.delete = function (id_persona_a_eliminar, retorno) {
     });
 }
 
-usuario_db.update("/", (req, res) => {
+usuario_db.update = function (req, res) {
 
     parametros = [req.body.email, req.body.nickname, req.body.password, req.body.persona_dni];
     $query = `UPDATE usuario set email = ?, nickname = ?, password = ? WHERE persona_dni = ?`;
@@ -124,7 +136,6 @@ usuario_db.update("/", (req, res) => {
         }
     }
     )
-}
-);
+};
 
 module.exports = usuario_db;
